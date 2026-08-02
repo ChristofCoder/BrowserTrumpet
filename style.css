@@ -1,0 +1,151 @@
+ body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: #1a1a1a;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      gap: 25px;
+    }
+
+    h1 {
+      font-size: 1.1rem;
+      color: #888;
+      font-weight: 400;
+      margin: 0;
+    }
+
+    /* Controls Bar */
+    .controls-bar {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    /* Toggle Switch Styling */
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #2a2a2a;
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid #444;
+    }
+
+    .toggle-label {
+      font-weight: bold;
+      font-size: 0.9rem;
+      color: #888;
+      transition: color 0.2s;
+    }
+
+    .toggle-label.active {
+      color: #00aaff;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 26px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #444;
+      transition: .3s;
+      border-radius: 26px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #0088ff;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+
+    /* Runde Knöpfe */
+    .round-container {
+      display: flex;
+      gap: 20px;
+    }
+
+    .btn-round {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: #333;
+      border: 3px solid #555;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      transition: all 0.1s ease;
+    }
+
+    .btn-round.active {
+      background: #00d26a;
+      border-color: #00ff80;
+      box-shadow: 0 0 15px #00d26a;
+      transform: scale(0.95);
+    }
+
+    /* Quadratische Knöpfe Grid (3x3) */
+    .square-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .btn-square {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      background: #333;
+      border: 2px solid #555;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+      transition: all 0.1s ease;
+    }
+
+    .btn-square.active {
+      background: #0088ff;
+      border-color: #00aaff;
+      box-shadow: 0 0 15px #0088ff;
+      transform: scale(0.95);
+    }
+
+    .info-box {
+      margin-top: 5px;
+      font-size: 0.85rem;
+      color: #666;
+    }

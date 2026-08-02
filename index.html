@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browser Trumpet</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+  
+</head>
+<body>
+  <h1>THE BROWSER TRUMPET</h1> 
+  <h1>by Christof Zellhofer (c)2026</h1>
+
+  <h1>Steuerung:  
+    <br><br>
+    Pfeiltasten (Links/Runter/Rechts) stellen die Ventile der Trompete dar. 
+    <br><br>
+    Zahlen (1–9) stellen die Naturtöne c1, g1, c2, e2, g2, c3, e3, g3, c4 dar.</h1>
+
+  <div class="controls-bar">
+    <!-- Stimmungen Switch -->
+    <div class="toggle-container">
+      <span id="label-c" class="toggle-label active">Stimmung: C</span>
+      <label class="switch">
+        <input type="checkbox" id="key-toggle">
+        <span class="slider"></span>
+      </label>
+      <span id="label-bb" class="toggle-label">Stimmung: B♭</span>
+    </div>
+
+    <!-- Sound Switch (Sinus vs Trompete) -->
+    <div class="toggle-container">
+      <span id="label-sine" class="toggle-label active">Sound: Sinus</span>
+      <label class="switch">
+        <input type="checkbox" id="sound-toggle">
+        <span class="slider"></span>
+      </label>
+      <span id="label-trumpet" class="toggle-label">Sound: Trompete</span>
+    </div>
+  </div>
+
+  <!-- Runde Knöpfe -->
+  <div class="round-container">
+    <div id="round-left" class="btn-round">◄</div>
+    <div id="round-down" class="btn-round">▼</div>
+    <div id="round-right" class="btn-round">►</div>
+  </div>
+
+  <!-- Quadratische Knöpfe -->
+  <div class="square-grid">
+    <div id="square-1" class="btn-square">1</div>
+    <div id="square-2" class="btn-square">2</div>
+    <div id="square-3" class="btn-square">3</div>
+    <div id="square-4" class="btn-square">4</div>
+    <div id="square-5" class="btn-square">5</div>
+    <div id="square-6" class="btn-square">6</div>
+    <div id="square-7" class="btn-square">7</div>
+    <div id="square-8" class="btn-square">8</div>
+    <div id="square-9" class="btn-square">9</div>
+  </div>
+
+  <div class="info-box">Klick einmal auf die Seite, um Audio zu aktivieren.</div>
+
+</body>
+</html>
