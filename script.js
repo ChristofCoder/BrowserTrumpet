@@ -259,20 +259,23 @@
       }
     }
 
-    // ==========================================
-// 5. TOUCH / POINTER EVENTS FÜR MOBILGERÄTE
 // ==========================================
+// 5. ERWEITERTE TOUCH / POINTER EVENTS (MULTITOUCH)
+// ==========================================
+
+// Verhindert Kontextmenü (Rechtsklick/Langes Drücken auf Mobilgeräten)
+document.addEventListener('contextmenu', e => e.preventDefault());
 
 // Pointer-Events für runde Knöpfe (Ventile)
 Object.entries(UI_ELEMENTS.round).forEach(([key, element]) => {
-  // Beim Drücken/Antippen aktivieren
   element.addEventListener("pointerdown", (e) => {
     e.preventDefault();
+    // Element an den Pointer binden, damit auch Bewegungen/Release exakt getrackt werden
+    element.setPointerCapture(e.pointerId);
     state.round.add(key);
     updateApp();
   });
 
-  // Beim Loslassen oder Verlassen des Buttons deaktivieren
   const releaseRound = (e) => {
     e.preventDefault();
     if (state.round.has(key)) {
@@ -282,7 +285,6 @@ Object.entries(UI_ELEMENTS.round).forEach(([key, element]) => {
   };
 
   element.addEventListener("pointerup", releaseRound);
-  element.addEventListener("pointerleave", releaseRound);
   element.addEventListener("pointercancel", releaseRound);
 });
 
@@ -290,14 +292,13 @@ Object.entries(UI_ELEMENTS.round).forEach(([key, element]) => {
 Object.entries(UI_ELEMENTS.square).forEach(([numStr, element]) => {
   const num = parseInt(numStr, 10);
 
-  // Beim Drücken/Antippen aktivieren
   element.addEventListener("pointerdown", (e) => {
     e.preventDefault();
+    element.setPointerCapture(e.pointerId);
     state.square = num;
     updateApp();
   });
 
-  // Beim Loslassen oder Verlassen des Buttons deaktivieren
   const releaseSquare = (e) => {
     e.preventDefault();
     if (state.square === num) {
@@ -307,6 +308,5 @@ Object.entries(UI_ELEMENTS.square).forEach(([numStr, element]) => {
   };
 
   element.addEventListener("pointerup", releaseSquare);
-  element.addEventListener("pointerleave", releaseSquare);
   element.addEventListener("pointercancel", releaseSquare);
 });
