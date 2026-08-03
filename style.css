@@ -226,6 +226,41 @@
   color: #00aaff;
   font-weight: bold;
 }
+
+/* Mikrofon-Button & Pegelanzeige 
+.mic-button {
+  background: #333;
+  color: #fff;
+  border: 1px solid #555;
+  padding: 8px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+.mic-button.active {
+  background: #00d26a;
+  border-color: #00ff80;
+  color: #000;
+}
+
+.mic-bar-container {
+  width: 60px;
+  height: 10px;
+  background: #111;
+  border-radius: 5px;
+  overflow: hidden;
+  border: 1px solid #444;
+}
+
+.mic-bar {
+  height: 100%;
+  width: 0%;
+  background: #00aaff;
+  transition: width 0.05s ease;
+}
+  */
 /*
    //Slyder-Styling
 

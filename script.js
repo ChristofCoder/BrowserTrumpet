@@ -56,8 +56,76 @@ class AudioEngine {
     this.delayMix = 0;
     this.reverbMix = 0;
     this.glideTime = 0; // ms
-  }
 
+    // Mikrophon
+    /*
+    this.micStream = null;
+    this.micAnalyser = null;
+    this.isMicActive = false;
+    this.micThreshold = 0.03; // Schwellenwert: Wie stark muss man hineinblasen?
+    */
+
+  }
+  /*
+  async initMic() {
+  this.init();
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    this.micStream = stream;
+    const source = this.ctx.createMediaStreamSource(stream);
+    
+    this.micAnalyser = this.ctx.createAnalyser();
+    this.micAnalyser.fftSize = 256;
+    source.connect(this.micAnalyser);
+    
+    this.isMicActive = true;
+    this.startMicLoop();
+    return true;
+  } catch (err) {
+    console.error("Mikrofon-Zugriff verweigert:", err);
+    alert("Mikrofon konnte nicht aktiviert werden.");
+    return false;
+  }
+}
+
+startMicLoop() {
+  const dataArray = new Uint8Array(this.micAnalyser.frequencyBinCount);
+  const micBar = document.getElementById("mic-bar");
+
+  const checkVolume = () => {
+    if (!this.isMicActive) return;
+
+    this.micAnalyser.getByteFrequencyData(dataArray);
+    
+    // Durchschnittliche Lautstärke berechnen
+    let sum = 0;
+    for (let i = 0; i < dataArray.length; i++) {
+      sum += dataArray[i];
+    }
+    const average = sum / dataArray.length;
+    const normVolume = average / 255; // Wert zwischen 0.0 und 1.0
+
+    // Visuelle Pegelanzeige aktualisieren
+    if (micBar) micBar.style.width = `${Math.min(100, normVolume * 300)}%`;
+
+    // Prüfen, ob der Atem-Druck ausreicht
+    const hasAir = normVolume > this.micThreshold;
+
+    // Dynamische Lautstärkesteuerung (je fester man bläst, desto lauter der Ton)
+    if (this.gainNode && this.oscillator) {
+      const dynamicGain = hasAir ? Math.min(0.4, normVolume * 1.5) : 0;
+      this.gainNode.gain.setTargetAtTime(dynamicGain, this.ctx.currentTime, 0.03);
+    }
+
+    // Wenn gekoppelt mit der updateApp()-Logik:
+    window.isBlowing = hasAir;
+    
+    requestAnimationFrame(checkVolume);
+  };
+
+  checkVolume();
+}
+*/
   init() {
     if (!this.ctx) {
       this.ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -429,7 +497,11 @@ setupKnob("knob-glide", "val-glide", " ms", (val) => audioEngine.glideTime = val
       }
 
       // 2. Ton berechnen (Nur wenn ein quadratischer Knopf gedrückt ist)
+      //const isToneSelected = state.square !== null && SQUARE_BASE_FREQUENCIES[state.square];
+      //const isAirAvailable = !audioEngine.isMicActive || window.isBlowing;
+
       if (state.square !== null && SQUARE_BASE_FREQUENCIES[state.square]) {
+      //if (isToneSelected && isAirAvailable) {
         let baseFreq = SQUARE_BASE_FREQUENCIES[state.square];
 
         // Summe aller aktiven Halbton-Veränderungen berechnen
@@ -524,6 +596,31 @@ setupKnob("knob-freq", "val-freq", " Hz", (val) => {
 setupKnob("knob-gain", "val-gain", "", (val) => {
   audioEngine.setVibratoDepth(val);
 });
+
+// Mikrofon Toggle-Button Event Handler
+/*
+const micBtn = document.getElementById("mic-btn");
+const micBarContainer = document.getElementById("mic-bar-container");
+
+micBtn.addEventListener("click", async () => {
+  if (!audioEngine.isMicActive) {
+    const success = await audioEngine.initMic();
+    if (success) {
+      micBtn.classList.add("active");
+      micBtn.textContent = "🎤 Mikrofon AN";
+      micBarContainer.style.display = "block";
+    }
+  } else {
+    audioEngine.isMicActive = false;
+    if (audioEngine.micStream) {
+      audioEngine.micStream.getTracks().forEach(track => track.stop());
+    }
+    micBtn.classList.remove("active");
+    micBtn.textContent = "🎤 Mikrofon aktivieren";
+    micBarContainer.style.display = "none";
+  }
+});
+*/
 /*
     // ==========================================
 // 6. SLIDER & MAUSRAD STEUERUNG
