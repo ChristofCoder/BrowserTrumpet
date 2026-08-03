@@ -60,6 +60,88 @@
     <div id="square-9" class="btn-square">9</div>
   </div>
 
+
+<!-- DREHKNOPF-MATRIX FÜR ALLE EFFEKTE -->
+<div class="effects-grid">
+
+  <!-- VIBRATO & PITCH BEND -->
+  <div class="knob-group">
+    <h3>Pitch & Vibrato</h3>
+    <div class="knobs-row">
+      <div class="knob-box">
+        <label>Pitch Bend</label>
+        <div class="knob" id="knob-pitch" data-min="-12" data-max="12" data-value="0"><div class="knob-indicator"></div></div>
+        <span class="knob-value" id="val-pitch">0 ST</span>
+      </div>
+      <div class="knob-box">
+        <label>Vib Speed</label>
+        <div class="knob" id="knob-vib-freq" data-min="0" data-max="15" data-value="5"><div class="knob-indicator"></div></div>
+        <span class="knob-value" id="val-vib-freq">5.0 Hz</span>
+      </div>
+      <div class="knob-box">
+        <label>Vib Depth</label>
+        <div class="knob" id="knob-vib-depth" data-min="0" data-max="20" data-value="0"><div class="knob-indicator"></div></div>
+        <span class="knob-value" id="val-vib-depth">0.0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- KLANG & OVERDRIVE -->
+  <div class="knob-group">
+    <h3>Tone & Character</h3>
+    <div class="knobs-row">
+      <div class="knob-box">
+        <label>Wah / Filter</label>
+        <div class="knob" id="knob-filter" data-min="200" data-max="8000" data-value="8000"><div class="knob-indicator"></div></div>
+        <span class="knob-value" id="val-filter">8000 Hz</span>
+      </div>
+      <div class="knob-box">
+        <label>Drive</label>
+        <div class="knob" id="knob-drive" data-min="0" data-max="100" data-value="0"><div class="knob-indicator"></div></div>
+        <span class="knob-value" id="val-drive">0%</span>
+      </div>
+      <div class="knob-box">
+        <label>Breath</label>
+        <div class="knob" id="knob-breath" data-min="0" data-max="100" data-value="0"><div class="knob-indicator"></div></div>
+        <span class="knob-value" id="val-breath">0%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RAUM & MODULATION -->
+  <div class="knob-group">
+    <h3>Time & Modulation</h3>
+    <div class="knobs-row">
+      <div class="knob-box">
+        <label>Tremolo</label>
+        <div class="knob" id="knob-tremolo" data-min="0" data-max="10" data-value="0"><div class="knob-indicator"></div></div>
+        <span class="knob-value" id="val-tremolo">0.0 Hz</span>
+      </div>
+      <div class="knob-box">
+        <label>Delay Echo</label>
+        <div class="knob" id="knob-delay" data-min="0" data-max="80" data-value="0"><div class="knob-indicator"></div></div>
+        <span class="knob-value" id="val-delay">0%</span>
+      </div>
+      <div class="knob-box">
+        <label>Reverb Hall</label>
+        <div class="knob" id="knob-reverb" data-min="0" data-max="100" data-value="0"><div class="knob-indicator"></div></div>
+        <span class="knob-value" id="val-reverb">0%</span>
+      </div>
+      <div class="knob-box">
+        <label>Glide</label>
+        <div class="knob" id="knob-glide" data-min="0" data-max="300" data-value="0"><div class="knob-indicator"></div></div>
+        <span class="knob-value" id="val-glide">0 ms</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+  <!-- Slider für Naturtöne (1-9) 
+<div class="slider-container">
+  <label for="tone-slider">Naturton: <span id="slider-value">1</span></label>
+  <input type="range" id="tone-slider" min="1" max="9" value="1" step="1">
+</div>
+-->
   <div class="info-box">Klick einmal auf die Seite, um Audio zu aktivieren.</div>
 
 </body>

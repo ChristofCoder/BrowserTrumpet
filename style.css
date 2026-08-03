@@ -150,6 +150,109 @@
       color: #666;
     }
 
+/* Effekte-Grid Layout */
+.effects-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  max-width: 900px;
+  width: 95%;
+}
+
+.knob-group {
+  background: #222;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 12px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.knob-group h3 {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.knobs-row {
+  display: flex;
+  gap: 15px;
+}
+
+.knob-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.knob-box label {
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #aaa;
+}
+
+.knob {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #444, #1a1a1a);
+  border: 2px solid #555;
+  position: relative;
+  cursor: ns-resize;
+  touch-action: none;
+  user-select: none;
+}
+
+.knob-indicator {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  width: 3px;
+  height: 14px;
+  background-color: #00aaff;
+  border-radius: 2px;
+  transform: translateX(-50%);
+  box-shadow: 0 0 4px #00aaff;
+}
+
+.knob-value {
+  font-size: 0.75rem;
+  color: #00aaff;
+  font-weight: bold;
+}
+/*
+   //Slyder-Styling
+
+.slider-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: #2a2a2a;
+  padding: 12px 24px;
+  border-radius: 15px;
+  border: 1px solid #444;
+  touch-action: manipulation;
+}
+
+.slider-container label {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #00aaff;
+}
+
+#tone-slider {
+  width: 200px;
+  cursor: pointer;
+  accent-color: #0088ff; 
+}
+*/
     /* Responsive Layout für mobile Geräte */
 @media (max-width: 768px) {
   /* Runde Knöpfe untereinander (vertikal) anordnen */
