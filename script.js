@@ -258,3 +258,55 @@
         audioEngine.stopSound();
       }
     }
+
+    // ==========================================
+// 5. TOUCH / POINTER EVENTS FÜR MOBILGERÄTE
+// ==========================================
+
+// Pointer-Events für runde Knöpfe (Ventile)
+Object.entries(UI_ELEMENTS.round).forEach(([key, element]) => {
+  // Beim Drücken/Antippen aktivieren
+  element.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    state.round.add(key);
+    updateApp();
+  });
+
+  // Beim Loslassen oder Verlassen des Buttons deaktivieren
+  const releaseRound = (e) => {
+    e.preventDefault();
+    if (state.round.has(key)) {
+      state.round.delete(key);
+      updateApp();
+    }
+  };
+
+  element.addEventListener("pointerup", releaseRound);
+  element.addEventListener("pointerleave", releaseRound);
+  element.addEventListener("pointercancel", releaseRound);
+});
+
+// Pointer-Events für quadratische Knöpfe (Naturtöne)
+Object.entries(UI_ELEMENTS.square).forEach(([numStr, element]) => {
+  const num = parseInt(numStr, 10);
+
+  // Beim Drücken/Antippen aktivieren
+  element.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    state.square = num;
+    updateApp();
+  });
+
+  // Beim Loslassen oder Verlassen des Buttons deaktivieren
+  const releaseSquare = (e) => {
+    e.preventDefault();
+    if (state.square === num) {
+      state.square = null;
+      updateApp();
+    }
+  };
+
+  element.addEventListener("pointerup", releaseSquare);
+  element.addEventListener("pointerleave", releaseSquare);
+  element.addEventListener("pointercancel", releaseSquare);
+});
