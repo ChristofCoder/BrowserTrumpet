@@ -259,6 +259,8 @@
       }
     }
 
+
+    /*
 // ==========================================
 // 5. ERWEITERTE TOUCH / POINTER EVENTS (MULTITOUCH)
 // ==========================================
@@ -310,3 +312,5 @@ Object.entries(UI_ELEMENTS.square).forEach(([numStr, element]) => {
   element.addEventListener("pointerup", releaseSquare);
   element.addEventListener("pointercancel", releaseSquare);
 });
+
+*/
