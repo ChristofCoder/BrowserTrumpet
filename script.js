@@ -57,75 +57,13 @@ class AudioEngine {
     this.reverbMix = 0;
     this.glideTime = 0; // ms
 
-    // Mikrophon
-    /*
-    this.micStream = null;
-    this.micAnalyser = null;
-    this.isMicActive = false;
-    this.micThreshold = 0.03; // Schwellenwert: Wie stark muss man hineinblasen?
-    */
+    // Vibrato Steuerung
+    this.isVibratoActive = false; // Steuert, ob das Vibrato gerade eingeschaltet ist
+    this.vibratoOsc = null;
+    this.vibratoGain = null;
 
   }
-  /*
-  async initMic() {
-  this.init();
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    this.micStream = stream;
-    const source = this.ctx.createMediaStreamSource(stream);
-    
-    this.micAnalyser = this.ctx.createAnalyser();
-    this.micAnalyser.fftSize = 256;
-    source.connect(this.micAnalyser);
-    
-    this.isMicActive = true;
-    this.startMicLoop();
-    return true;
-  } catch (err) {
-    console.error("Mikrofon-Zugriff verweigert:", err);
-    alert("Mikrofon konnte nicht aktiviert werden.");
-    return false;
-  }
-}
-
-startMicLoop() {
-  const dataArray = new Uint8Array(this.micAnalyser.frequencyBinCount);
-  const micBar = document.getElementById("mic-bar");
-
-  const checkVolume = () => {
-    if (!this.isMicActive) return;
-
-    this.micAnalyser.getByteFrequencyData(dataArray);
-    
-    // Durchschnittliche Lautstärke berechnen
-    let sum = 0;
-    for (let i = 0; i < dataArray.length; i++) {
-      sum += dataArray[i];
-    }
-    const average = sum / dataArray.length;
-    const normVolume = average / 255; // Wert zwischen 0.0 und 1.0
-
-    // Visuelle Pegelanzeige aktualisieren
-    if (micBar) micBar.style.width = `${Math.min(100, normVolume * 300)}%`;
-
-    // Prüfen, ob der Atem-Druck ausreicht
-    const hasAir = normVolume > this.micThreshold;
-
-    // Dynamische Lautstärkesteuerung (je fester man bläst, desto lauter der Ton)
-    if (this.gainNode && this.oscillator) {
-      const dynamicGain = hasAir ? Math.min(0.4, normVolume * 1.5) : 0;
-      this.gainNode.gain.setTargetAtTime(dynamicGain, this.ctx.currentTime, 0.03);
-    }
-
-    // Wenn gekoppelt mit der updateApp()-Logik:
-    window.isBlowing = hasAir;
-    
-    requestAnimationFrame(checkVolume);
-  };
-
-  checkVolume();
-}
-*/
+  
   init() {
     if (!this.ctx) {
       this.ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -157,6 +95,42 @@ startMicLoop() {
     return baseFreq * Math.pow(2, this.pitchBendSemitones / 12);
   }
 
+  // --- NEUE HELFER-METHODEN FÜR DAS VIBRATO ---
+    startVibrato() {
+      if (this.vibratoOsc || !this.oscillator || this.vibratoDepth <= 0) return;
+      const now = this.ctx.currentTime;
+      
+      this.vibratoOsc = this.ctx.createOscillator();
+      this.vibratoGain = this.ctx.createGain();
+      
+      this.vibratoOsc.frequency.setValueAtTime(this.vibratoFreq, now);
+      this.vibratoGain.gain.setValueAtTime(this.vibratoDepth, now);
+      
+      this.vibratoOsc.connect(this.vibratoGain);
+      this.vibratoGain.connect(this.oscillator.frequency);
+      
+      this.vibratoOsc.start(now);
+    }
+
+    stopVibrato() {
+      if (this.vibratoOsc) {
+        this.vibratoOsc.stop();
+        this.vibratoOsc.disconnect();
+        this.vibratoOsc = null;
+        this.vibratoGain = null;
+      }
+    }
+
+    setVibratoState(active) {
+      this.isVibratoActive = active;
+      if (active) {
+        this.startVibrato();
+      } else {
+        this.stopVibrato();
+      }
+    }
+
+
   playFrequency(freq) {
     this.init();
     if (this.ctx.state === 'suspended') this.ctx.resume();
@@ -182,17 +156,12 @@ startMicLoop() {
     this.oscillator.type = this.soundType === 'trumpet' ? 'sawtooth' : 'sine';
     this.oscillator.frequency.setValueAtTime(targetFreq, now);
 
-    // 2. Vibrato (LFO)
-    if (this.vibratoDepth > 0) {
-      this.vibratoOsc = this.ctx.createOscillator();
-      this.vibratoGain = this.ctx.createGain();
-      this.vibratoOsc.frequency.setValueAtTime(this.vibratoFreq, now);
-      this.vibratoGain.gain.setValueAtTime(this.vibratoDepth, now);
-      this.vibratoOsc.connect(this.vibratoGain);
-      this.vibratoGain.connect(this.oscillator.frequency);
-      this.vibratoOsc.start(now);
+    // 2. Vibrato (LFO) - Wird nur gestartet, wenn isVibratoActive true ist
+    if (this.vibratoDepth > 0 && this.isVibratoActive) {
+      this.startVibrato();
     }
 
+    
     // 3. Envelope / Gain
     this.gainNode = this.ctx.createGain();
     const targetGain = this.soundType === 'trumpet' ? 0.2 : 0.3;
@@ -325,6 +294,7 @@ startMicLoop() {
 
       this.oscillator = null;
       this.currentBaseFreq = null;
+      this.stopVibrato();
     }
   }
 
@@ -432,6 +402,11 @@ setupKnob("knob-glide", "val-glide", " ms", (val) => audioEngine.glideTime = val
       if (e.repeat) return;
       let stateChanged = false;
 
+      // Plus-Taste für Vibrato abfangen
+      if (e.key === "+" || e.code === "NumpadAdd") {
+        audioEngine.setVibratoState(true);
+      }
+
       if (KEY_MAP_ROUND[e.code]) {
         const key = KEY_MAP_ROUND[e.code];
         if (!state.round.has(key)) {
@@ -454,6 +429,11 @@ setupKnob("knob-glide", "val-glide", " ms", (val) => audioEngine.glideTime = val
     // Keyup Listener
     window.addEventListener("keyup", (e) => {
       let stateChanged = false;
+
+      // Plus-Taste loslassen -> Vibrato deaktivieren
+      if (e.key === "+" || e.code === "NumpadAdd") {
+        audioEngine.setVibratoState(false);
+      }
 
       if (KEY_MAP_ROUND[e.code]) {
         const key = KEY_MAP_ROUND[e.code];
@@ -597,128 +577,3 @@ setupKnob("knob-gain", "val-gain", "", (val) => {
   audioEngine.setVibratoDepth(val);
 });
 
-// Mikrofon Toggle-Button Event Handler
-/*
-const micBtn = document.getElementById("mic-btn");
-const micBarContainer = document.getElementById("mic-bar-container");
-
-micBtn.addEventListener("click", async () => {
-  if (!audioEngine.isMicActive) {
-    const success = await audioEngine.initMic();
-    if (success) {
-      micBtn.classList.add("active");
-      micBtn.textContent = "🎤 Mikrofon AN";
-      micBarContainer.style.display = "block";
-    }
-  } else {
-    audioEngine.isMicActive = false;
-    if (audioEngine.micStream) {
-      audioEngine.micStream.getTracks().forEach(track => track.stop());
-    }
-    micBtn.classList.remove("active");
-    micBtn.textContent = "🎤 Mikrofon aktivieren";
-    micBarContainer.style.display = "none";
-  }
-});
-*/
-/*
-    // ==========================================
-// 6. SLIDER & MAUSRAD STEUERUNG
-// ==========================================
-
-// Funktion zur Aktualisierung des Ton-Zustands über den Slider
-function handleSliderChange(val) {
-  const num = parseInt(val, 10);
-  UI_ELEMENTS.sliderValue.textContent = num;
-  state.square = num;
-  updateApp();
-}
-
-// 1. Slider zieht/klickt (Echtzeit-Aktualisierung)
-UI_ELEMENTS.slider.addEventListener("input", (e) => {
-  handleSliderChange(e.target.value);
-});
-*/
-// Sound stoppen, wenn man den Slider auf Mobilgeräten/Maus loslässt (optional, 
-// falls der Ton wie bei Tasten nur beim Halten/Bewegen klingen soll)
-/*
-UI_ELEMENTS.slider.addEventListener("pointerup", () => {
-  state.square = null;
-  updateApp();
-});
-*/
-/*
-// 2. Mausrad-Steuerung auf dem Slider (oder im Slider-Container)
-const sliderContainer = document.querySelector(".slider-container");
-
-sliderContainer.addEventListener("wheel", (e) => {
-  e.preventDefault(); // Verhindert normales Seitenscrollen
-
-  let currentValue = parseInt(UI_ELEMENTS.slider.value, 10);
-
-  // Mausrad hoch = Ton höher (Wert +1), Mausrad runter = Ton tiefer (Wert -1)
-  if (e.deltaY < 0) {
-    currentValue = Math.min(9, currentValue + 1);
-  } else if (e.deltaY > 0) {
-    currentValue = Math.max(1, currentValue - 1);
-  }
-
-  UI_ELEMENTS.slider.value = currentValue;
-  handleSliderChange(currentValue);
-}, { passive: false });
-
-*/
-    /*
-// ==========================================
-// 5. ERWEITERTE TOUCH / POINTER EVENTS (MULTITOUCH)
-// ==========================================
-
-// Verhindert Kontextmenü (Rechtsklick/Langes Drücken auf Mobilgeräten)
-document.addEventListener('contextmenu', e => e.preventDefault());
-
-// Pointer-Events für runde Knöpfe (Ventile)
-Object.entries(UI_ELEMENTS.round).forEach(([key, element]) => {
-  element.addEventListener("pointerdown", (e) => {
-    e.preventDefault();
-    // Element an den Pointer binden, damit auch Bewegungen/Release exakt getrackt werden
-    element.setPointerCapture(e.pointerId);
-    state.round.add(key);
-    updateApp();
-  });
-
-  const releaseRound = (e) => {
-    e.preventDefault();
-    if (state.round.has(key)) {
-      state.round.delete(key);
-      updateApp();
-    }
-  };
-
-  element.addEventListener("pointerup", releaseRound);
-  element.addEventListener("pointercancel", releaseRound);
-});
-
-// Pointer-Events für quadratische Knöpfe (Naturtöne)
-Object.entries(UI_ELEMENTS.square).forEach(([numStr, element]) => {
-  const num = parseInt(numStr, 10);
-
-  element.addEventListener("pointerdown", (e) => {
-    e.preventDefault();
-    element.setPointerCapture(e.pointerId);
-    state.square = num;
-    updateApp();
-  });
-
-  const releaseSquare = (e) => {
-    e.preventDefault();
-    if (state.square === num) {
-      state.square = null;
-      updateApp();
-    }
-  };
-
-  element.addEventListener("pointerup", releaseSquare);
-  element.addEventListener("pointercancel", releaseSquare);
-});
-
-*/
